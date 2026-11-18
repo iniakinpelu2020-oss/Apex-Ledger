@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Apex Ledger</title>
+<meta name="description" content="Income, expenses, categories and a monthly balance for ApexOS, stored on this device.">
+<meta name="theme-color" content="#080a12">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <img src="./icons/icon-192.png" alt="" width="28" height="28">
+    <span>Apex Ledger</span>
+  </div>
+  <div class="monthbar">
+    <button id="prevMonth" type="button" aria-label="Previous month">&lsaquo;</button>
+    <span id="monthLabel"></span>
+    <button id="nextMonth" type="button" aria-label="Next month">&rsaquo;</button>
+  </div>
+  <select id="currency" aria-label="Currency">
+    <option value="&pound;">&pound; GBP</option>
+    <option value="$">$ USD</option>
+    <option value="&euro;">&euro; EUR</option>
+    <option value="&yen;">&yen; JPY</option>
+    <option value="&#8358;">&#8358; NGN</option>
+  </select>
+</header>
+
+<main>
+  <section class="summary">
+    <div class="stat">
+      <span class="k">Income</span>
+      <strong id="sumIn" class="pos">&mdash;</strong>
+    </div>
+    <div class="stat">
+      <span class="k">Expenses</span>
+      <strong id="sumOut" class="neg">&mdash;</strong>
+    </div>
+    <div class="stat">
+      <span class="k">Balance</span>
+      <strong id="sumBal">&mdash;</strong>
+    </div>
+  </section>
+
+  <form id="entryForm" class="card entry" autocomplete="off">
+    <div class="typeline" role="group" aria-label="Entry type">
+      <button type="button" data-type="out" aria-pressed="true">Expense</button>
+      <button type="button" data-type="in" aria-pressed="false">Income</button>
+    </div>
+    <input id="amount" inputmode="decimal" placeholder="0.00" required aria-label="Amount">
+    <select id="cat" aria-label="Category"></select>
+    <input id="date" type="date" aria-label="Date">
+    <input id="note" type="text" placeholder="Note (optional)" aria-label="Note">
+    <button class="primary" type="submit">Add</button>
+  </form>
+
+  <div class="cols">
+    <section class="card">
+      <h2>Entries</h2>
+      <ul id="list" class="rows"></ul>
+      <p id="empty" class="muted">Nothing recorded this month.</p>
+    </section>
+    <aside class="card">
+      <h2>By category</h2>
+      <ul id="breakdown" class="bars"></ul>
+      <p id="breakdownEmpty" class="muted">No expenses this month.</p>
+    </aside>
+  </div>
+
+  <section class="card">
+    <h2>Categories</h2>
+    <div class="catcols">
+      <div>
+        <h3>Expense</h3>
+        <ul id="catOut" class="chiplist"></ul>
+      </div>
+      <div>
+        <h3>Income</h3>
+        <ul id="catIn" class="chiplist"></ul>
+      </div>
+    </div>
+    <form id="catForm" class="catadd" autocomplete="off">
+      <select id="newCatType" aria-label="Category type">
+        <option value="out">Expense</option>
+        <option value="in">Income</option>
+      </select>
+      <input id="newCat" type="text" placeholder="New category name" required aria-label="New category name">
+      <button type="submit">Add category</button>
+    </form>
+  </section>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+<script src="./app.js"></script>
+</body>
+</html>
