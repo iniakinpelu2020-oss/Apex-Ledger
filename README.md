@@ -1,35 +1,45 @@
 # Apex Ledger
 
-Income, payouts and expenses, in the currency you are actually paid in.
+Income, expenses and a monthly balance that stay on this device. Vanilla HTML/CSS/JS with relative
+`./` paths, so it runs from `/apps/ledger/` inside the ApexOS bundle and works offline.
 
-**Status: not built. This is the best first real app in the suite.**
+## Run
 
-## Why this one first
+```sh
+python3 -m http.server 8080
+# then open http://127.0.0.1:8080/
+```
 
-It is small, it is entirely yours, and it needs no backend, no storage quota and no
-account. A single browser page with IndexedDB is a complete, working product. It also has
-an obvious correctness bar — the numbers either add up or they do not — which makes it a
-good place to build habits before the harder projects.
+## What it does
 
-## What it should do
+- **Month navigation** in the header; tap the month name to jump back to the current month.
+- **Three totals** for the selected month: income, expenses and the net balance, coloured by sign.
+- **Entries** grouped by date, newest first, with category, note and a signed amount.
+- **Breakdown** of the month's expenses by category, sorted largest first with proportional bars.
+- **Categories** per type (expense and income), with your own added or removed. Removing a category
+  in use warns how many entries keep the old label.
+- **Currency symbol** for £, $, €, ¥ or ₦ — display only, no conversion.
 
-- Record income and expenses with a date, amount, category and note.
-- Show a month at a time, and a running balance.
-- Export to CSV so it can go into a spreadsheet.
-- Work offline, permanently, with data on the device.
+## Storage
 
-## The constraint that shapes it
+One `localStorage` key, `apex.ledger.v1`:
 
-Money is integers. Store amounts in the smallest unit (kobo, cents) as whole numbers.
-Floating point will eventually produce a balance that is off by 0.01 and you will not find
-where. This is the one technical decision that matters.
+```json
+{
+  "currency": "£",
+  "entries": [
+    { "id": "…", "type": "out", "amount": 1250, "category": "Food",
+      "note": "Lunch", "date": "2026-11-18", "created": 1763472000000 }
+  ],
+  "cats": { "out": ["Food", "Rent"], "in": ["Salary", "Gift"] }
+}
+```
 
-## What you need to do
+Amounts are **integer minor units** (pence, cents) so no float rounding creeps into totals. Totals
+are summed at render time by filtering on the `YYYY-MM` prefix of `date`, which keeps entries in the
+month you recorded them regardless of timezone.
 
-1. Nothing. No keys, no accounts, no card.
+## Bundling into ApexOS
 
-## First three steps
-
-1. A form that records one transaction, stored locally.
-2. A month view with totals per category.
-3. CSV export, before any charts — export is what makes the data feel real.
+Roster entry `Apex-Ledger ledger`. Keep paths relative and bump `CACHE` in `sw.js`
+(`apex-ledger-v1`) when shell files change.
